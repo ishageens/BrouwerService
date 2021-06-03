@@ -15,5 +15,22 @@ namespace BrouwerService.Controllers
         private readonly IBrouwerRepository repository;
         public BrouwerController(IBrouwerRepository repository) =>
         this.repository = repository;
+
+        [HttpGet]
+        public IActionResult FindAll() => base.Ok(repository.FindAll());
+
+        [HttpGet("{id}")]
+        public IActionResult FindById(int id)
+        {
+            var brouwer = repository.FindById(id);
+            if (brouwer == null)
+            {
+                return base.NotFound();
+            }
+            return base.Ok(brouwer);
+        }
+
+        [HttpGet("naam")]
+        public ActionResult FindByBeginNaam(string begin) => base.Ok(repository.FindByBeginNaam(begin));
     }
 }
