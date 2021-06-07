@@ -7,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,6 +29,11 @@ namespace BrouwerService
         {
             services.AddDbContext<BierlandContext>(options => options.UseSqlServer(Configuration.GetConnectionString("bierland")));
             services.AddScoped<IBrouwerRepository, BrouwerRepository>();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Brouwers API", Version = "v1" });
+                c.EnableAnnotations();
+            });
             services.AddControllers().AddXmlDataContractSerializerFormatters();
         }
 
@@ -40,7 +46,8 @@ namespace BrouwerService
             }
 
             app.UseRouting();
-
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Brouwer API"));
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

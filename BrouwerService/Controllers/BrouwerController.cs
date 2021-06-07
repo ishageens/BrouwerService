@@ -3,6 +3,7 @@ using BrouwerService.Repositories;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,8 +19,11 @@ namespace BrouwerService.Controllers
         public BrouwerController(IBrouwerRepository repository) =>
         this.repository = repository;
 
+        [SwaggerOperation("Alle brouwers")]
         [HttpGet]
         public async Task<ActionResult> FindAll() => base.Ok(await repository.FindAllAsync());
+
+        [SwaggerOperation("Brouwer waarvan je de id kent")]
         [HttpGet("{id}")]
         public async Task<ActionResult> FindById(int id)
         {
@@ -30,9 +34,12 @@ namespace BrouwerService.Controllers
             }
             return base.Ok(brouwer);
         }
+
+        [SwaggerOperation("Brouwers waarvan je het begin van de naam kent")]
         [HttpGet("naam")]
         public async Task<ActionResult> FindByBeginNaam(string begin) => base.Ok(await repository.FindByBeginNaamAsync(begin));
 
+        [SwaggerOperation("Brouwer verwijderen")]
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -45,6 +52,7 @@ namespace BrouwerService.Controllers
             return base.Ok();
         }
 
+        [SwaggerOperation("Brouwer toevoegen")]
         [HttpPost]
         public async Task<ActionResult> Post(Brouwer brouwer)
         {
@@ -55,6 +63,8 @@ namespace BrouwerService.Controllers
             }
             return base.BadRequest(this.ModelState);
         }
+
+        [SwaggerOperation("Brouwer wijzigen")]
         [HttpPut("{id}")]
         public async Task<ActionResult> Put(int id, Brouwer brouwer)
         {
