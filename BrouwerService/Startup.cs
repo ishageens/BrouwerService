@@ -34,6 +34,7 @@ namespace BrouwerService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Brouwers API", Version = "v1" });
                 c.EnableAnnotations();
             });
+            services.AddCors();
             services.AddControllers().AddXmlDataContractSerializerFormatters();
         }
 
@@ -48,6 +49,7 @@ namespace BrouwerService
             app.UseRouting();
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Brouwer API"));
+            app.UseCors(builder => builder.AllowAnyOrigin().AllowAnyHeader());
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
