@@ -19,53 +19,50 @@ namespace BrouwerService.Controllers
         this.repository = repository;
 
         [HttpGet]
-        public IActionResult FindAll() => base.Ok(repository.FindAll());
-
+        public async Task<ActionResult> FindAll() => base.Ok(await repository.FindAllAsync());
         [HttpGet("{id}")]
-        public IActionResult FindById(int id)
+        public async Task<ActionResult> FindById(int id)
         {
-            var brouwer = repository.FindById(id);
+            var brouwer = await repository.FindByIdAsync(id);
             if (brouwer == null)
             {
                 return base.NotFound();
             }
             return base.Ok(brouwer);
         }
-
         [HttpGet("naam")]
-        public ActionResult FindByBeginNaam(string begin) => base.Ok(repository.FindByBeginNaam(begin));
+        public async Task<ActionResult> FindByBeginNaam(string begin) => base.Ok(await repository.FindByBeginNaamAsync(begin));
 
         [HttpDelete("{id}")]
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var brouwer = repository.FindById(id);
+            var brouwer = await repository.FindByIdAsync(id);
             if (brouwer == null)
             {
                 return base.NotFound();
             }
-            repository.Delete(brouwer);
+            await repository.DeleteAsync(brouwer);
             return base.Ok();
         }
 
         [HttpPost]
-        public IActionResult Post(Brouwer brouwer)
+        public async Task<ActionResult> Post(Brouwer brouwer)
         {
             if (this.ModelState.IsValid)
             {
-                repository.Insert(brouwer);
+                await repository.InsertAsync(brouwer);
                 return base.CreatedAtAction(nameof(FindById), new { id = brouwer.Id }, null);
             }
             return base.BadRequest(this.ModelState);
         }
-
         [HttpPut("{id}")]
-        public ActionResult Put(int id, Brouwer brouwer)
+        public async Task<ActionResult> Put(int id, Brouwer brouwer)
         {
             if (this.ModelState.IsValid && brouwer.Id == id)
             {
                 try
                 {
-                    repository.Update(brouwer);
+                    await repository.UpdateAsync(brouwer);
                     return base.Ok();
                 }
                 catch (DbUpdateConcurrencyException)
